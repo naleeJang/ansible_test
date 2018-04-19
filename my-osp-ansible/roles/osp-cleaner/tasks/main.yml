@@ -1,0 +1,6 @@
+---
+  - name: Delete a Compute Instance
+    os_server:
+      cloud: ospcloud
+      state: absent
+      name: "{{ instance_name }}"
