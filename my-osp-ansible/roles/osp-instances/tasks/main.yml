@@ -1,0 +1,20 @@
+---
+  - name: Create a server instance
+    os_server:
+      cloud: ospcloud
+      name: "{{ instance_name }}"
+      image: rhel-guest
+      meta: "group={{ group }},deployment_name={{ deployment }}"
+      flavor: m2.small
+      security_groups: "{{ security_group_name }}"
+      key_name: ansible_ssh
+      wait: yes
+      nics:
+        - net-name: pri_network
+      userdata: |
+        #!/bin/bash
+        curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+        cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+        curl -o /tmp/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
+        cp /tmp/internal.repo /etc/yum.repos.d/internal.repo
+    register: instanceip

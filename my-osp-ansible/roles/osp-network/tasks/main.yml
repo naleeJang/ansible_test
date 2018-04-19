@@ -1,0 +1,38 @@
+---
+  - os_network:
+      cloud: ospcloud
+      state: present
+      name: pub_network
+      external: true
+  - os_subnet:
+      cloud: ospcloud
+      state: present
+      network_name: pub_network
+      name: public_subnet
+      cidr: 10.10.10.0/24
+      dns_nameservers:
+        - 8.8.8.7
+        - 8.8.8.8
+      host_routes:
+        - destination: 0.0.0.0/0
+          nexthop: 10.10.10.0
+        - destination: 192.168.0.0/24
+          nexthop: 192.168.0.0
+
+  - os_network:
+      cloud: ospcloud
+      state: present
+      name: pri_network
+      external: false
+    register: internal
+    tags:
+      - tested
+  - os_subnet:
+      cloud: ospcloud
+      state: present
+      network_name: pri_network
+      name: pri_subnet
+      cidr: 20.20.20.0/24
+      dns_nameservers:
+        - 8.8.8.7
+        - 8.8.8.8
