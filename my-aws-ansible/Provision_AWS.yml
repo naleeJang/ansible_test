@@ -1,0 +1,10 @@
+---
+- name: Provision AWS
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Run Order_SVC.sh for Provision AWS
+      shell: |
+        source bin/credential.rc
+        bin/Order_SVC.sh -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1
