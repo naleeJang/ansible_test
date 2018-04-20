@@ -1,7 +1,6 @@
 ---
 - name: Provision AWS
-  hosts: localhost
-  connection: local
+  hosts: jumpbox
 
   tasks:
     - name: Run Order_SVC.sh for Provision AWS
