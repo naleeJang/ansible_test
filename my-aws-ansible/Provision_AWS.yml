@@ -3,7 +3,33 @@
   hosts: jumpbox
 
   tasks:
+    - name: Make bin Directory
+      file: path=~/bin state=directory
+    
+    - name: Wget shell script file - common.sh
+      get_url:
+        url: http://www.opentlc.com/download/ansible_bootcamp/scripts/common.sh
+        dest: ~/common.sh
+
+    - name: Wget shell script file
+      get_url:
+        url: http://www.opentlc.com/download/ansible_bootcamp/scripts/jq-linux64
+        dest: ~/bin/jq
+        mode: 0755
+
+    - name: Wget shell script file
+      get_url:
+        url: http://www.opentlc.com/download/ansible_bootcamp/scripts/order_svc.sh
+        dest: ~/Order_SVC.sh
+        mode: 0755
+
     - name: Run Order_SVC.sh for Provision AWS
       shell: |
-        source bin/credential.rc
-        bin/Order_SVC.sh -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1
+        cat << EOF > credential.rc
+        export username=hjang-redhat.com
+        export password=Wkdguswjd99
+        export uri=https://labs.opentlc.com
+        EOF
+        
+        source credential.rc
+        ./Order_SVC.sh -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1
