@@ -18,9 +18,9 @@ get_token() {
 
         
 
-    token_info=$(curl -s --user hjang-redhat.com:Wkdguswjd99 \
+    token_info=$(curl -s --user $username:$password \
                       -X GET -H "Accept: application/json" \
-                      https://labs.opentlc.com/api/auth \
+                      $uri/api/auth \
                      | jq -r '.auth_token + ";" + (.token_ttl|tostring)')
 
     tok=${token_info%;*}
