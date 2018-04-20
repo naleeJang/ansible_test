@@ -1,6 +1,6 @@
 ---
 - name: Provision AWS
-  hosts: jumpbox
+  hosts: localhost
 
   tasks:
     - name: Make bin Directory
@@ -32,4 +32,4 @@
         EOF
         
         source credential.rc
-        ./Order_SVC.sh -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1
+        ./Order_SVC.sh -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1 -y
