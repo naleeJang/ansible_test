@@ -1,28 +1,6 @@
 ---
+
 - hosts: jumpbox
-  tasks:
-  - name: Delete frontend instance
-    include_role:
-      name: osp-cleaner
-      vars_from: frontend.yaml
-
-  - name: Create app1 instance
-    include_role:
-      name: osp-cleaner
-      vars_from: app1.yaml
-
-  - name: Create app2 instance
-    include_role:
-      name: osp-cleaner
-      vars_from: app2.yaml
-
-  - name: Create db instance
-    include_role:
-      name: osp-cleaner
-      vars_from: db.yaml
-
-  - name: Gather facts
-    include_role:
-      name: osp-facts
-    tags:
-      - test_inventory
+  gather_facts: true
+  roles:
+    - osp-cleaner
