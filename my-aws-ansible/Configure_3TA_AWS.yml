@@ -1,9 +1,5 @@
 ---
 
-- ec2_instance_facts:
-    filters:
-      "tag:instance_filter": three-tier-app-hjang*
-
 - name: setup load-balancer tier
   hosts: frontends
   become: yes
