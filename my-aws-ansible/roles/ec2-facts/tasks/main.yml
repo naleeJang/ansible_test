@@ -1,0 +1,7 @@
+---
+# tasks file for osp-facts
+   - name: Fetch Instance Info
+     ec2_instance_facts:
+     register: result
+   
+   - debug: result
