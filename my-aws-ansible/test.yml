@@ -1,6 +1,0 @@
----
-
-- hosts: ec2
-  gather_facts: true
-  roles:
-    - name: ec2-facts
