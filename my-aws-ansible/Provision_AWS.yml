@@ -26,12 +26,12 @@
     - name: Run Order_SVC.sh for Provision AWS
       shell: |
         cat << EOF > credential.rc
-        export username=hjang-redhat.com
-        export password=Wkdguswjd99
-        export uri=https://labs.opentlc.com
+       export username=hjang-redhat.com
+       export password=Wkdguswjd99
+       export uri=https://labs.opentlc.com
   
     - name: Source credential
-      shell: source ~/credential.rc
+      shell: . credential.rc
 
     - name: Execute Order SVC
       shell: ./Order_SVC.sh -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1 -y
