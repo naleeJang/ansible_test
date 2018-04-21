@@ -29,15 +29,9 @@
         export username=hjang-redhat.com
         export password=Wkdguswjd99
         export uri=https://labs.opentlc.com
-        EOF
   
     - name: Source credential
       shell: source ~/credential.rc
-      register: output
-      args:
-        executable: /bin/bash
-
-    - debug: msg= "{{ output }}"
 
     - name: Execute Order SVC
       shell: ./Order_SVC.sh -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1 -y
