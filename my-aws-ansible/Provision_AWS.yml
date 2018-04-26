@@ -31,7 +31,7 @@
         export uri=https://labs.opentlc.com
   
     - name: Source credential
-      shell: source ~/credential.rc
+      command: "source ~/credential.rc"
 
     - name: Execute Order SVC
-      shell: sh ~/Order_SVC.sh -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1 -y
+      shell: "sleep 1 & sh ~/Order_SVC.sh -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1 -y"
