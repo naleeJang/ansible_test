@@ -14,7 +14,7 @@
     - name: Wget shell script file
       get_url:
         url: http://www.opentlc.com/download/ansible_bootcamp/scripts/jq-linux64
-        dest: ~/bin/jq
+        dest: ~/jq
         mode: 0755
 
     - name: Wget shell script file
@@ -23,21 +23,12 @@
         dest: ~/Order_SVC.sh
         mode: 0755
 
-    - name: Run Order_SVC.sh for Provision AWS
+    - name: Make Credential.rc
       shell: |
         cat << EOF > ~/credential.rc
         export username=hjang-redhat.com
         export password=Wkdguswjd99
         export uri=https://labs.opentlc.com
 
-    - name: Check credential.rc file 
-      stat:
-        path: ~/credential.rc
-      register: stat_result
-  
-    - name: Source credential
-      command: "source ~/credential.rc"
-      when: stat_result.stat.exists
-
-    - name: Execute Order SVC
-      shell: "sleep 1 & sh ~/Order_SVC.sh -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1 -y"
+    - name: source credential.rc
+      shell: source ~/credential.rc && sh ~/Order_SVC.sh -c "OPENTLC Automation" -i "Three Tier Application" -t 1 -y
