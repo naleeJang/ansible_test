@@ -14,7 +14,7 @@
     - name: Wget shell script file
       get_url:
         url: http://www.opentlc.com/download/ansible_bootcamp/scripts/jq-linux64
-        dest: ~/jq
+        dest: ~/bin/jq
         mode: 0755
 
     - name: Wget shell script file
