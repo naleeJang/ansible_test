@@ -1,0 +1,8 @@
+---
+
+- hosts: jumpbox
+  gather_facts: true
+  incloud_roles:
+    name: osp-test
+    tasks_from: checkinventory
+    
