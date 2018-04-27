@@ -5,13 +5,6 @@
       region_name: RegionOne
     register: result
 
-  - name: Fetch Instance Info again
-    os_server_facts:
-      cloud: ospcloud
-      region_name: RegionOne
-    register: result
-    when: result is failed
-
   - name: Add host
     add_host:
       name: "{{ item.public_v4 }}"
