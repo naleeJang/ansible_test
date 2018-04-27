@@ -1,10 +1,10 @@
 ---
 
-- name: Fetch Instance Info
-  os_server_facts:
-    cloud: ospcloud
-    region_name: RegionOne
-  register: result
+- name: Check Web Site
+  uri:
+    url: http://{{ frontend }}
+    return_content: yes
+  register: webpage
 
 - debug:
-    var: result
+    var: webpage
