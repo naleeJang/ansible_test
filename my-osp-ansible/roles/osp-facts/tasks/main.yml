@@ -5,14 +5,24 @@
       region_name: RegionOne
     register: result
 
+  - name: Fetch Instance Info again
+    os_server_facts:
+      cloud: ospcloud
+      region_name: RegionOne
+    register: result
+    when: result is failed
+
   - name: Add host
     add_host:
       name: "{{ item.public_v4 }}"
       group: "{{ item.metadata.group }}"
     with_items: "{{ result.ansible_facts.openstack_servers }}"
+    when: result is succeeded
+    
 
   - name: Add host
     add_host:
       name: "{{ item.public_v4 }}"
       group: "{{ item.metadata.deployment_name }}"
     with_items: "{{ result.ansible_facts.openstack_servers }}"
+    when: result is succeeded
