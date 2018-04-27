@@ -5,7 +5,7 @@
       region_name: RegionOne
     register: result
 
-  - degug:
+  - debug:
       var: result
     when: result is succeeded
 
