@@ -2,7 +2,7 @@
 
 - name: Check Web Site
   uri:
-    url: http://{{ frontend }}
+    url: http://{{ frontends }}
     return_content: yes
   register: webpage
 
