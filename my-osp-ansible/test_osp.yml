@@ -1,0 +1,5 @@
+---
+
+- hosts:jumpbox
+  roles:
+    - osp-test
