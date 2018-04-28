@@ -33,3 +33,8 @@
     - {name: base-config, tags: base-config}
     - {name: geerlingguy.postgresql, tags: [dbs, postgres]}
 
+
+- name: check my app site
+  hosts: jumpbox
+  roles:
+    - osp-test

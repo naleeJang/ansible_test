@@ -1,0 +1,10 @@
+---
+
+- name: Check Web Site
+  uri:
+    url: http://{{ frontends }}
+    return_content: yes
+  register: webpage
+
+- debug:
+    var: webpage
