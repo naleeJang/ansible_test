@@ -25,3 +25,19 @@
     include_role:
       name: osp-instances
       vars_from: db.yaml
+
+  - name: Gather facts
+    include_role:
+      name: osp-facts
+    tags:
+      - test_inventory
+
+- hosts: dev
+  gather_facts: false
+  become: yes
+  tasks:
+  - name: Ping
+    ping:
+    tags:
+     - test_inventory
+
