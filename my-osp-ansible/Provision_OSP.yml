@@ -27,10 +27,9 @@
       vars_from: db.yaml
 
   - name: Gather facts
+    gather_facts: true
     include_role:
       name: osp-facts
-    tags:
-      - test_inventory
 
 - hosts: dev
   gather_facts: false
@@ -38,6 +37,3 @@
   tasks:
   - name: Ping
     ping:
-    tags:
-     - test_inventory
-

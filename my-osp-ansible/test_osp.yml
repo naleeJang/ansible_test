@@ -1,6 +1,0 @@
----
-
-- hosts: jumpbox
-  gather_facts: true
-  roles:
-    - osp-test
