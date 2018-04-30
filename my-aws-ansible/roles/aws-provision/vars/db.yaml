@@ -3,6 +3,6 @@
 instance_name: db
 instance_group_name: appdbs
 security_name: db_servers
-ansible_aws_region: ap-northeast-2a
+ansible_aws_region: ap-northeast-2
 ansible_aws_secret_key: U/X4/SYsd7qkuhwKLmKHJVPwZGr/ASbqqkv2lTj3
 ansible_aws_access_key: AKIAIUJ3WP72FY2YPYYA
