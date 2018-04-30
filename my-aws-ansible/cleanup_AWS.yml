@@ -4,8 +4,14 @@
 #   Remove all repos
 #   Remove the base 3 tier app packages (haproxy, tomcat etc)
 
+- hosts: bastion
+  gather_facts: true
+  become: yes
+  roles:
+    - name: ec2-facts
+
 - name: cleaner - delete the the tier app specfic additions
-  hosts: alls
+  hosts: production
   become: yes
   roles:
     - cleaner

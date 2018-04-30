@@ -18,11 +18,10 @@
     name: "{{ item }}" 
     state: absent
   with_items:
-    - httpie
     - python-pip
     - haproxy
     - tomcat
-    - postgresql-server
+    - postgresql96-server
 
 - name: delete tomcat webapps directory - removing index.html etc
   file:
