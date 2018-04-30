@@ -3,4 +3,6 @@
 instance_name: app2
 instance_group_name: apps
 security_name: app_servers
-region: ap-northeast-2a
+ansible_aws_region: ap-northeast-2a
+ansible_aws_secret_key: U/X4/SYsd7qkuhwKLmKHJVPwZGr/ASbqqkv2lTj3
+ansible_aws_access_key: AKIAIUJ3WP72FY2YPYYA

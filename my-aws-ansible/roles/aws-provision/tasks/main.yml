@@ -2,15 +2,17 @@
 
 - name: Create a server instance on AWS
   ec2:
+    aws_access_key: "{{ ansible_aws_access_key }}"
+    aws_secret_key: "{{ ansible_aws_secret_key }}"
+    aws_region: "{{ ansible_aws_region }}"
     key_name: id_rsa
     group: "{{ security_name }}"
     instance_type: t2.micro
     image: ami-efaf0181
     wait: yes
-    region: "{{ region }}"
     instance_tag:
-      name: "{{ instance_name }}"
-      group: "{{ instance_group_name }}"
+      name: "tower-{{ instance_name }}"
+      group: "tower-{{ instance_group_name }}"
     volumes:
       - device_name: /dev/xvda
         volume_type: gp2
@@ -19,8 +21,8 @@
     vpc_subnet_id: subnet-d383dbbb
     assign_public_ip: yes
     count_tag:
-      name: "{{ instance_name }}"
-      group: "{{ instance_group_name }}"
+      name: "tower-{{ instance_name }}"
+      group: "tower-{{ instance_group_name }}"
     exact_count: 1
   register: ec2
     
