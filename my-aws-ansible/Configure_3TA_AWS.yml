@@ -1,5 +1,12 @@
 ---
 
+- hosts: localhost
+  gather_facts: true
+  roles:
+    - name: ec2-facts
+
+# Setup front-end load balancer tier
+
 - name: setup load-balancer tier
   hosts: frontends
   become: yes
@@ -25,3 +32,9 @@
   roles:
     - {name: base-config, tags: base-config}
     - {name: geerlingguy.postgresql, tags: [dbs, postgres]}
+
+
+- name: check my app site
+  hosts: localhost
+  roles:
+    - aws-test

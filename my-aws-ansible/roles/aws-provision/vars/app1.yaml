@@ -1,0 +1,5 @@
+---
+
+instance_name: app1
+instance_group_name: apps
+security_name: app_servers

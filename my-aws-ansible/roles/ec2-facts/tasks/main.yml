@@ -1,7 +1,21 @@
 ---
-# tasks file for osp-facts
-   - name: Fetch Instance Info
-     ec2_instance_facts:
-     register: result
-   
-   - debug: result
+# tasks file for ec2-facts
+- name: Fetch Instance Info
+  ec2_facts:
+  register: result
+
+
+- name: Add new instance to hostgroup
+  add_host:
+    name: "{{ item.public_ip }}"
+    groupname: "{{ item.tags.group }}"
+  with_items: "{{ result.instances }}"
+  when: result is succeeded
+
+
+- name: Add instance to production group
+  add_host:
+    name: "{{ item.public_ip }}"
+    groupname: "production"
+  with_items: "{{ result.instances }}"
+  when: result is succeeded 

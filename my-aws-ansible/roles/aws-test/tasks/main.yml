@@ -1,0 +1,10 @@
+---
+
+- name: Check Web Site
+  uri:
+    url: http://{{ groups['frontends'][0] }}
+    return_content: yes
+  register: webpage
+
+- debug:
+    var: webpage
