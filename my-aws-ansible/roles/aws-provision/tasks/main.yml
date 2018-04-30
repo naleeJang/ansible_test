@@ -20,7 +20,6 @@
         delete_on_termination: true
     vpc_subnet_id: subnet-d383dbbb
     assign_public_ip: yes
-    exact_count: 1
   register: ec2
     
 - name: Add new instance to host group
