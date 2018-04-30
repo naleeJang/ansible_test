@@ -20,9 +20,6 @@
         delete_on_termination: true
     vpc_subnet_id: subnet-d383dbbb
     assign_public_ip: yes
-    count_tag:
-      name: "tower-{{ instance_name }}"
-      group: "tower-{{ instance_group_name }}"
     exact_count: 1
   register: ec2
     
