@@ -4,6 +4,15 @@
       cloud: ospcloud
     register: result
 
+  - name: Check Web Site
+    uri:
+      url: http://{{ groups['frontends'][0] }}
+      return_content: yes
+    register: webpage
+
+  - debug:
+      var: webpage
+
   - name: Delete Instance
     os_server:
       cloud: ospcloud
@@ -11,3 +20,4 @@
       name: "{{ item.name }}"
     with_items:
       - "{{ result.ansible_facts.openstack_servers }}"
+    when: webpage is failed
