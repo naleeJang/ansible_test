@@ -18,6 +18,7 @@
       name: aws-provision
       vars_from: app2.yaml
 
+
   - name: Create db instance
     include_role:
       name: aws-provision

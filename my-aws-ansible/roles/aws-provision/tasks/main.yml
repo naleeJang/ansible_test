@@ -11,8 +11,8 @@
     image: ami-efaf0181
     wait: yes
     instance_tags:
-      name: "tower-{{ instance_name }}"
-      group: "tower-{{ instance_group_name }}"
+      Name: "tower-{{ instance_name }}"
+      Group: "tower-{{ instance_group_name }}"
     volumes:
       - device_name: /dev/xvda
         volume_type: gp2
@@ -20,6 +20,10 @@
         delete_on_termination: true
     vpc_subnet_id: subnet-d383dbbb
     assign_public_ip: yes
+    count_tag:
+      Name: "tower-{{ instance_name }}"
+      Group: "tower-{{ instance_group_name }}"
+    exact_count: 1
   register: ec2
     
 - name: Add new instance to host group
@@ -32,7 +36,8 @@
   wait_for:
     host: "{{ item.public_dns_name }}"
     port: 22
-    delay: 60
-    tiemout: 320
+    delay: 100
+    connect_timeout: 100
     state: started
+    search_regex: OpenSSH
   with_items: "{{ ec2.instances }}"
