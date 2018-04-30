@@ -3,3 +3,4 @@
 instance_name: db
 instance_group_name: appdbs
 security_name: db_servers
+region: ap-northeast-2a

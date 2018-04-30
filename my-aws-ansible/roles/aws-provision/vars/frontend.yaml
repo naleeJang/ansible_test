@@ -3,3 +3,4 @@
 instance_name: frontend
 instance_group_name: frontends
 security_name: frontend_servers
+region: ap-northeast-2a

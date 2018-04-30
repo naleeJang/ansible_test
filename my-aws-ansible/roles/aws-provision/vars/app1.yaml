@@ -3,3 +3,4 @@
 instance_name: app1
 instance_group_name: apps
 security_name: app_servers
+region: ap-northeast-2a
