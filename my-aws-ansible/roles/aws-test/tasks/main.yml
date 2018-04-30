@@ -2,7 +2,7 @@
 
 - name: Check Web Site
   uri:
-    url: http://{{ groups['frontends'][0] }}
+    url: http://{{ groups['tower-frontends'][0] }}
     return_content: yes
   register: webpage
 

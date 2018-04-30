@@ -1,21 +1,23 @@
 ---
 # tasks file for ec2-facts
 - name: Fetch Instance Info
-  ec2_facts:
+  ec2_instance_facts:
   register: result
 
+- debug: 
+    var: result
 
 - name: Add new instance to hostgroup
   add_host:
-    name: "{{ item.public_ip }}"
-    groupname: "{{ item.tags.group }}"
+    name: "{{ item.public_dns_name }}"
+    groupname: "{{ item.tags.Group }}"
   with_items: "{{ result.instances }}"
   when: result is succeeded
 
 
 - name: Add instance to production group
   add_host:
-    name: "{{ item.public_ip }}"
+    name: "{{ item.public_dns_name }}"
     groupname: "production"
   with_items: "{{ result.instances }}"
   when: result is succeeded 
