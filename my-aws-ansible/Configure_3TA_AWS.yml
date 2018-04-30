@@ -1,6 +1,6 @@
 ---
 
-- hosts: localhost
+- hosts: bastion
   gather_facts: true
   roles:
     - name: ec2-facts
@@ -35,6 +35,6 @@
 
 
 - name: check my app site
-  hosts: localhost
+  hosts: bastion
   roles:
     - aws-test
