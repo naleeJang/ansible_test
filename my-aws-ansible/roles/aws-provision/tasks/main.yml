@@ -10,7 +10,7 @@
     instance_type: t2.micro
     image: ami-efaf0181
     wait: yes
-    instance_tag:
+    instance_tags:
       name: "tower-{{ instance_name }}"
       group: "tower-{{ instance_group_name }}"
     volumes:
