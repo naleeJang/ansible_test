@@ -1,0 +1,25 @@
+---
+# tasks file for osp16-project
+
+- name: create project
+  os_project:
+    state: present
+    name: demo
+    description: demo_project
+    domain_id: default
+    enabled: True
+
+- name: create user
+  os_user:
+    state: present
+    name: naleejang
+    password: redhat
+    email: nalee999@gmail.com
+    domain: default
+    default_project: demo
+
+- name: attach role
+  os_user_role:
+    user: naleejang
+    role: _member_
+    project: demo
