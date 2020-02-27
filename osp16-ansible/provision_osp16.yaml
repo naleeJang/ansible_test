@@ -2,3 +2,4 @@
 - hosts: localhost
   roles:
           - osp16-flavor
+          - osp16-project
