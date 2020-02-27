@@ -10,7 +10,7 @@
 - name: create subnet
   os_subnet:
     state: present
-    network_name: demo_net
+    network_name: demo-net
     name: demo-subnet
     cidr: 10.10.10.0/24
     project: demo
