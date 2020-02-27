@@ -1,0 +1,33 @@
+---
+# tasks file for osp16-clean
+
+- name: delete instance
+  os_server:
+    name: demo-vm
+    state: absent
+
+- name: delete security group
+  os_security_group:
+    name: sg-demo
+    state: absent
+
+- name: delete keypair
+  os_keypair:
+    name: ansible-key
+    state: absent
+
+- name: delete router
+  os_router:
+    name: demo-router
+    state: absent
+
+- name: delete subnet
+  os_subnet:
+    name: demo-subnet
+    state: absent
+
+- name: delete network
+  os_network:
+    name: demo-net
+    state: absent
+
