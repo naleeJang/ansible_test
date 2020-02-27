@@ -5,7 +5,6 @@
   os_network:
     state: present
     name: demo-net
-    project: demo
 
 - name: create subnet
   os_subnet:
@@ -13,13 +12,11 @@
     network_name: demo-net
     name: demo-subnet
     cidr: 10.10.10.0/24
-    project: demo
 
 - name: create router
   os_router:
     state: present
     name: demo-router
-    project: demo
     network: external
     external_fixed_ips:
       - subnet: sub-external

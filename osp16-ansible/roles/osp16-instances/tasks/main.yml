@@ -5,7 +5,6 @@
   os_server:
     state: present
     name: demo-vm
-    project: demo
     image: cirros-0.4.0
     timeout: 200
     flavor: tiny
