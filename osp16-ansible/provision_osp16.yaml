@@ -1,4 +1,4 @@
 ---
 - hosts: localhost
   roles:
-          - osp16-securitygroup
+          - osp16-instance
