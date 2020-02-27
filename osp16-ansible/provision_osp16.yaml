@@ -1,4 +1,4 @@
 ---
 - hosts: localhost
   roles:
-          - osp16-instance
+          - osp16-instances
