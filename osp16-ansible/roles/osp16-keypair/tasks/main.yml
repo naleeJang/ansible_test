@@ -1,0 +1,8 @@
+---
+# tasks file for osp16-keypair
+
+- os_keypair:
+      cloud: mordred
+      state: present
+      name: ansible_key
+      public_key_file: /home/me/.ssh/id_rsa.pub

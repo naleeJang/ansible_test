@@ -1,0 +1,10 @@
+---
+# tasks file for osp16-flavor
+
+os_nova_flavor:
+  cloud: mycloud
+  state: present
+  name: tiny
+  ram: 1024
+  vcpus: 1
+  disk: 10

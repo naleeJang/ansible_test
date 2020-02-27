@@ -1,0 +1,34 @@
+---
+# tasks file for osp16-network
+
+- os_network:
+    cloud: mycloud
+    state: present
+    name: ext_network
+    external: true
+
+- os_subnet:
+    state: present
+    network_name: network1
+    name: net1subnet
+    cidr: 192.168.0.0/24
+    dns_nameservers:
+       - 8.8.8.7
+       - 8.8.8.8
+    host_routes:
+       - destination: 0.0.0.0/0
+         nexthop: 12.34.56.78
+       - destination: 192.168.0.0/24
+         nexthop: 192.168.0.1
+
+- os_router:
+    cloud: mycloud
+    state: present
+    name: router1
+    network: ext_network1
+    external_fixed_ips:
+      - subnet: public-subnet
+        ip: 172.24.4.2
+    interfaces:
+      - private-subnet
+
