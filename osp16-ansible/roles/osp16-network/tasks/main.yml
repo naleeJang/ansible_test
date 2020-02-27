@@ -25,4 +25,3 @@
       - subnet: sub-external
     interfaces:
       - demo-subnet
-
