@@ -5,6 +5,7 @@
   os_security_group:
     state: present
     name: sg-demo
+    project: demo
     description: security group for demo project
 
 - name: add rules to secrurity group
