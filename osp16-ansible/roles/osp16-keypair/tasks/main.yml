@@ -1,8 +1,14 @@
 ---
 # tasks file for osp16-keypair
 
-- os_keypair:
-      cloud: mordred
+  - name: Generate key files
+    user:
+      name: "{{ ansible_env.USER }}"
+      generate_ssh_key: yes
+      ssh_key_file: .ssh/ansible_id_rsa
+
+  - name: Create keypair
+    os_keypair:
       state: present
       name: ansible_key
-      public_key_file: /home/me/.ssh/id_rsa.pub
+      public_key_file: .ssh/ansible_id_rsa.pub
