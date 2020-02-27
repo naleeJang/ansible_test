@@ -20,7 +20,7 @@
     state: present
     name: demo-router
     project: demo
-    network: demo-net
+    network: external
     external_fixed_ips:
       - subnet: sub-external
     interfaces:
