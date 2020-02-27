@@ -5,12 +5,13 @@
   os_security_group:
     state: present
     name: sg-demo
-    project: demo
     description: security group for demo project
+    project: demo
 
 - name: add rules to secrurity group
   os_security_group_rule:
     security_group: sg-demo
+    project: demo
     protocol: tcp
     port_range_min: "{{ item.port }}"
     port_range_max: "{{ item.port }}"
