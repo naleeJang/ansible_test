@@ -16,11 +16,6 @@
     name: ansible_key
     state: absent
 
-- name: delete router
-  os_router:
-    name: demo-router
-    state: absent
-
 - name: delete subnet
   os_subnet:
     name: demo-subnet
@@ -31,3 +26,7 @@
     name: demo-net
     state: absent
 
+- name: delete router
+  os_router:
+    name: demo-router
+    state: absent
