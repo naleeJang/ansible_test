@@ -11,5 +11,4 @@
     os_keypair:
       state: present
       name: ansible_key
-      project: demo
       public_key_file: "{{ ansible_env.HOME }}/.ssh/ansible_id_rsa.pub"

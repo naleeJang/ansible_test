@@ -13,7 +13,7 @@
 
 - name: delete keypair
   os_keypair:
-    name: ansible-key
+    name: ansible_key
     state: absent
 
 - name: delete router
