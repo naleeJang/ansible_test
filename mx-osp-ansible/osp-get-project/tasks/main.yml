@@ -1,0 +1,9 @@
+---
+# tasks file for osp-get-project
+# Gather information about a previously created project by name
+- openstack.cloud.project_info:
+    name: "{{ project_name }}"
+  register: result
+
+- debug:
+    msg: "{{ result.openstack_projects }}"
