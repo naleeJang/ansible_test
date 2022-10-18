@@ -1,0 +1,6 @@
+---
+
+- hosts: localhost
+  collection: openstack.cloud
+  roles:
+    - osp-get-project
