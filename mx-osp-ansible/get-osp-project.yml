@@ -4,5 +4,6 @@
   collections: 
     - openstack.cloud
 
-  roles:
-    - osp-get-project
+  tasks:
+    - import_role:
+        name: osp-get-project
