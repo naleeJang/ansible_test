@@ -1,0 +1,9 @@
+---
+
+- hosts: localhost
+  collections: 
+    - openstack.cloud
+
+  tasks:
+    - import_role:
+        name: osp-create-project

@@ -1,2 +1,9 @@
 ---
 # tasks file for osp-get-user
+# Gather information about a previously created user by name
+- openstack.cloud.identity_user_info:
+    name: "{{ user_name }}"
+  register: result
+
+- debug:
+    msg: "{{ result.openstack_users }}"

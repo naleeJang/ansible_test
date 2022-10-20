@@ -1,2 +1,17 @@
 ---
 # tasks file for osp-create-user
+
+# Create a user
+- openstack.cloud.identity_user:
+    state: present
+    name: "{{ user_name }}"
+    password: "{{ user_password }}"
+    email: "{{ user_email }}"
+    domain: default
+    default_project: "{{ project_name }}"
+
+# Grant an admin role on the user admin in the project project1
+- openstack.cloud.role_assignment:
+    user: "{{ user_name }}"
+    role: _member_
+    project: "{{ project_name }}"  

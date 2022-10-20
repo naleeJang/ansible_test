@@ -1,2 +1,11 @@
 ---
 # tasks file for osp-create-project
+
+# Create a project
+- openstack.cloud.project:
+    endpoint_type: admin
+    state: present
+    name: "{{ project_name }}"
+    description: "{{ project_description }}"
+    domain_id: default
+    enabled: True
