@@ -3,7 +3,6 @@
 
 # Create a project
 - openstack.cloud.project:
-    endpoint_type: admin
     state: present
     name: "{{ project_name }}"
     description: "{{ project_description }}"
