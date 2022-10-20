@@ -13,5 +13,5 @@
 # Grant an admin role on the user admin in the project project1
 - openstack.cloud.role_assignment:
     user: "{{ user_name }}"
-    role: _member_
+    role: member
     project: "{{ project_name }}"  
