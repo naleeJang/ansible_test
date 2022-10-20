@@ -1,0 +1,9 @@
+---
+# tasks file for osp-get-infor
+# Gather information about all servers named <web*> that are in an active state:
+- openstack.cloud.server_info:
+    filters:
+      vm_state: active
+  register: result
+- debug:
+    msg: "{{ result.openstack_servers }}"

@@ -1,0 +1,10 @@
+---
+# tasks file for osp-get-images
+# Show all available Openstack images
+- name: Select all available Openstack images
+  openstack.cloud.image_info:
+  register: result
+
+- name: Show images
+  debug:
+    msg: "{{ result.image }}"

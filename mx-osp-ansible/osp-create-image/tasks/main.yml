@@ -1,0 +1,9 @@
+---
+# tasks file for osp-create-image
+# Upload an image from a local file named cirros-0.3.0-x86_64-disk.img
+- openstack.cloud.image:
+    name: "{{ image_name }}"
+    container_format: bare
+    disk_format: qcow2
+    state: present
+    filename: "{{ file_name }}"

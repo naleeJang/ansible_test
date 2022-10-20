@@ -1,0 +1,14 @@
+---
+# tasks file for osp-create-instance
+# Create a new instance in named cloud mordred availability zone az2
+# and assigns a pre-known floating IP
+- name: launch an instance
+  openstack.cloud.server:
+  state: present
+  name: "{{ instance_name }}"
+  image: "{{ image_name }}"
+  timeout: 200
+  flavor: "{{ flavor_name }}"
+  nics:
+    - net-name: "{{ network_name }}"
+    - port-name: "{{ port_name }}"
