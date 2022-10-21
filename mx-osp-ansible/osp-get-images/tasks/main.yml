@@ -7,5 +7,5 @@
 
 - name: Show images
   debug:
-    msg: "{{ item.name.stdout }}"
+    msg: "{{ item.name }}"
   with_items: "{{ result.image }}"
