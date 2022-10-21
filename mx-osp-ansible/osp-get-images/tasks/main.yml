@@ -7,4 +7,5 @@
 
 - name: Show images
   debug:
-    msg: "{{ result.image }}"
+    msg: "{{ item.name }}"
+   loop: "{{ result.image }}"
