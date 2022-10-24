@@ -9,6 +9,5 @@
     image: "{{ image_name }}"
     timeout: 200
     flavor: "{{ flavor_name }}"
-    nics:
-      - net-name: "{{ network_name }}"
-      - port-name: "{{ port_name }}"
+    network: "{{ network_name }}"
+    config_drive: true
