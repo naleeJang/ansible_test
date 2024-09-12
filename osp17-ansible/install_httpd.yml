@@ -20,6 +20,7 @@
     - name: Check httpd service
       ansible.builtin.uri:
         url: "http://{{ ansible_default_ipv4.address }}/index.html"
+        return_content: true
       register: result
 
     - name: Print debug
