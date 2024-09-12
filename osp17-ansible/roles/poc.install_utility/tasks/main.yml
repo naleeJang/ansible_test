@@ -10,10 +10,10 @@
     src: rhel92.repo.j2
     dest: /etc/yum.repos.d/rhel92.repo
 
-- name: update system
-  ansible.builtin.package:
-    name: "*"
-    state: latest
+#- name: update system
+#  ansible.builtin.package:
+#    name: "*"
+#    state: latest
 
 - name: Install utility packages
   ansible.builtin.package:
