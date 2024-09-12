@@ -1,0 +1,31 @@
+---
+
+- hosts: localhost
+
+  tasks:
+
+    - name: Select Instance
+      openstack.cloud.server_info:
+        server: "{{ vm_name }}"
+      register: vm_info
+
+    - name: Select volume
+      openstack.cloud.volume_info:
+        name: "{{ vm_name }}-data-vol"
+      register: vol_info
+
+    - debug:
+        msg: "{{ vm_name }} - {{ vm_info.openstack_servers[0].accessIPv4 }}"
+
+    - name: Delete Instance
+      openstack.cloud.server:
+        name: "{{ vm_name }}"
+        state: absent
+
+    - name: Delete volume
+      openstack.cloud.volume:
+        name: "{{ vol_info.volumes[0].name }}"
+        state: absent
+      when:
+        - keep_yn == "no"
+        - vol_info.volumes[0].name is defined
