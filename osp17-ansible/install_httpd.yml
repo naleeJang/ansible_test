@@ -19,7 +19,7 @@
 
     - name: Check httpd service
       ansible.builtin.uri:
-        url: "http://{{ ansible_facts.ansible_default_ipv4.address }}"
+        url: "http://{{ ansible_default_ipv4.address }}"
       register: result
 
     - name: Print debug
