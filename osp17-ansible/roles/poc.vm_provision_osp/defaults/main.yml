@@ -1,0 +1,16 @@
+---
+# defaults file for asap.vm_provision_osp
+
+vm_name: "testvm"
+flavor_name: "4x8"
+image_name: "rhel-9.2-x86_64-kvm.qcow2"
+vm_size: "50"
+os_volume_type: "tripleo"
+network_name: "service-300"
+
+
+# 20240726 add
+volume_name: "ceph-data"
+volume_type: "tripleo"
+volume_size: "500"
+volume_device: "/dev/vdb"

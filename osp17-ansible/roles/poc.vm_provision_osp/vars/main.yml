@@ -1,0 +1,7 @@
+---
+# vars file for asap.vm_provision_osp
+
+security_group_name: "allowall"
+root_passwd: "P@ssw0rd"
+inventory_name: "01. OSP_Inventory"
+ssh_pub_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPsxt4J23cgA0hMLFqFP+BhVmWEfy9fU9EBrJY8WvYki root@rhaap.samsungds.com"

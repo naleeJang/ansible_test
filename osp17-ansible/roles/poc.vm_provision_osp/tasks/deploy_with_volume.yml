@@ -1,0 +1,35 @@
+---
+- name: Create Instance with volume
+  openstack.cloud.server:
+    state: present
+    name: "{{ vm_name }}"
+    availability_zone: "{{ zone_name }}:{{ node_name }}"
+    image: "{{ image_info.openstack_images[0].name }}"
+    flavor: "{{ flavor_info.openstack_flavors[0].name }}"
+    network: "{{ network_name }}"
+    security_groups: ["{{ security_group_name }}"]
+    auto_ip: false
+    config_drive: true
+    boot_from_volume: true
+    terminate_volume: true
+    volume_size: "{{ vm_size }}"
+    wait: yes
+    userdata: |
+      #cloud-config
+      users:
+        - default
+        - name: ansible
+          groups: ansible
+          shell: /bin/bash
+          sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+          groups: users,admin,wheel,adm,systemd-journal
+          ssh_authorized_keys: |
+            {{ ssh_pub_key }}
+      chpasswd:
+        list: |
+          ansible:{{ os_password }}
+          root:{{ os_password }}
+        expire: False
+  register: instance_info
+
+- ansible.builtin.include_tasks: add_volume.yml

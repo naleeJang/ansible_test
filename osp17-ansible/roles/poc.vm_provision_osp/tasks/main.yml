@@ -1,0 +1,50 @@
+---
+# tasks file for poc.vm_provision_osp
+#
+
+- name: Search Flavor
+  openstack.cloud.compute_flavor_info:
+    name: "{{ flavor_name }}"
+  register: flavor_info
+
+- debug:
+    msg: "{{ flavor_info.openstack_flavors[0].name }}"
+
+- name: Search Image
+  openstack.cloud.image_info:
+    image: "{{ image_name }}"
+  register: image_info
+
+- debug:
+    msg: "{{ image_info.openstack_images[0].name }}"
+
+- ansible.builtin.include_tasks: deploy_with_volume.yml
+
+- debug:
+    msg: "{{ instance_info.openstack.accessIPv4 }}"
+
+- name: Add IP to inventory
+  awx.awx.host:
+    name: "{{ instance_info.openstack.accessIPv4 }}"
+    description: "{{ vm_name }}"
+    inventory: "{{ inventory_name }}"
+    enabled: true
+    state: present
+    controller_host: "{{ controller_hostname }}"
+    controller_username: "{{ controller_username }}"
+    controller_password: "{{ controller_password }}"
+    validate_certs: false
+
+- name: Define asap_dbhost
+  set_stats:
+    data:
+      poc_vmip: "{{ instance_info.openstack.accessIPv4 }}" 
+  
+- name: Wait for SSH to osp vm
+  ansible.builtin.wait_for:
+    host: "{{ instance_info.openstack.accessIPv4 }}"
+    port: 22
+    delay: 20
+    connect_timeout: 100
+    state: started
+    search_regex: OpenSSH

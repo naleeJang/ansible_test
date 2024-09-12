@@ -1,0 +1,14 @@
+---
+- name: create volume
+  openstack.cloud.volume:
+    name: "{{ volume_name }}"
+    volume_type: "{{ volume_type }}"
+    size: "{{ volume_size }}"
+    state: present
+
+- name: attach volume to vm
+  openstack.cloud.server_volume:
+    server: "{{ vm_name }}"
+    volume: "{{ volume_name }}"
+    device: "{{ volume_device }}"
+    state: present  
