@@ -3,7 +3,6 @@
   openstack.cloud.server:
     state: present
     name: "{{ vm_name }}"
-    availability_zone: "{{ zone_name }}:{{ node_name }}"
     image: "{{ image_info.openstack_images[0].name }}"
     flavor: "{{ flavor_info.openstack_flavors[0].name }}"
     network: "{{ network_name }}"
