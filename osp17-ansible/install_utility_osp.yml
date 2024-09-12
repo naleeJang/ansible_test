@@ -1,6 +1,6 @@
 ---
 
-- hosts: localhost
+- hosts: "{{ poc_vmip }}"
   tasks:
     - ansible.builtin.import_role:
-        name: poc.vm_provision_osp
+        name: poc.install_utility
