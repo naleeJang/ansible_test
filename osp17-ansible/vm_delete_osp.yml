@@ -27,5 +27,4 @@
         name: "{{ vol_info.volumes[0].name }}"
         state: absent
       when:
-        - keep_yn == "no"
         - vol_info.volumes[0].name is defined
