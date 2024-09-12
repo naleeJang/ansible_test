@@ -1,0 +1,22 @@
+---
+
+- hosts: "{{ vm_name }}"
+  tasks:
+- name: Install httpd package
+  ansible.builtin.package:
+    name: httpd
+    state: present
+
+- name: Start httpd service
+  ansible.builtin.service:
+    name: httpd
+    state: started
+
+- name: Copy repo file
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+
+- name: Check httpd service
+  ansible.builtin.uri:
+    url: "http://{{ ansible_facts.ansible_default_ipv4.address }}"

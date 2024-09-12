@@ -17,5 +17,5 @@
 
 - name: Install utility packages
   ansible.builtin.package:
-    name: sshpass, dstat, sysstat, net-tools, wget, httpd
+    name: sshpass, dstat, sysstat, net-tools, wget
     state: present
