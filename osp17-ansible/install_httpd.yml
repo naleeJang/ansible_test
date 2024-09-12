@@ -25,4 +25,4 @@
 
     - name: Print debug
       ansible.builtin.debug:
-        msg: "{{ result }}"
+        msg: "{{ result.content }}"
