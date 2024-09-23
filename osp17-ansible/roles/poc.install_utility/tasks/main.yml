@@ -12,7 +12,7 @@
 
 - name: Copy resolve.conf
   ansible.builtin.template:
-    src: resolve.conf.j2
+    src: resolv.conf.j2
     dest: /etc/resolve.conf
 
 #- name: update system
