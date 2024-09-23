@@ -1,0 +1,46 @@
+---
+
+- hosts: localhost
+  vars:
+    subnet: "service-300-subnet"
+    protocol: "HTTP"
+    p_port: "80"
+  tasks:
+    - name: View Host List
+      ansible.builtin.host_group_vars:
+        stage: "inventory"
+      register: host_vars
+
+    - debug:
+         msg: "{{ host_vars }}"
+
+#    - name: Create loadbalancer
+#      openstack.cloud.loadbalancer:
+#        name: "{{ lb_name }}"
+#        state: present
+#        vip_subnet: "{{ subnet }}"
+
+#    - name: Create listener
+#      openstack.cloud.lb_listener:
+#        load_balancer: "{{ lb_name }}"
+#        name: "{{ lb_name }}-listener"
+#        protocol: "{{ protocol }}"
+#        protocol_port: "{{ p_port }}"
+#        state: present
+
+#    - name: Create pool
+#      openstack.cloud.lb_pool:
+#        loadbalancer: "{{ lb_name }}"
+#        name: "{{ lb_name }}-pool"
+#        lb_algorithm: ROUND_ROBIN
+#        protocol: "{{ protocol }}"
+#        state: present
+
+#    - name: Create lb_member
+#      openstack.cloud.lb_member:
+#         pool: "{{ lb_name }}-pool"
+#         name: "{{ item.vm_name }}"
+#         address: "{{ item.vm_ip }}"
+#         protocol_port: "{{ item.vm_port }}"
+#         state: present
+#      loop: 
