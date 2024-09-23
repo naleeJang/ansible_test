@@ -10,10 +10,10 @@
     src: rhel92.repo.j2
     dest: /etc/yum.repos.d/rhel92.repo
 
-- name: Copy resolve.conf
+- name: Copy resolv.conf
   ansible.builtin.template:
     src: resolv.conf.j2
-    dest: /etc/resolve.conf
+    dest: /etc/resolv.conf
 
 #- name: update system
 #  ansible.builtin.package:
