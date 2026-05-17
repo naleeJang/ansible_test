@@ -1,0 +1,239 @@
+---
+# =============================================================================
+# VMware VM 정보 수집 (vCenter 7/8 → AAP 2.6)
+# -----------------------------------------------------------------------------
+# 사용 collection:
+#   - vmware.vmware       : Red Hat Certified, vCenter 7/8 검증됨 (AAP 지원)
+#   - community.vmware    : 디스크/네트워크 등 세부 모듈 보완
+#
+# 인증:
+#   AAP의 "VMware vCenter" Credential을 통해 환경변수로 주입됩니다.
+#     VMWARE_HOST / VMWARE_USER / VMWARE_PASSWORD / VMWARE_VALIDATE_CERTS
+# =============================================================================
+
+- name: "[정보 수집] 결과 저장 디렉터리 생성"
+  ansible.builtin.file:
+    path: "{{ output_dir }}"
+    state: directory
+    mode: '0755'
+
+# -----------------------------------------------------------------------------
+# 1. 대상 VM 목록 확정
+# -----------------------------------------------------------------------------
+- name: "[정보 수집] 전체 VM 목록 조회 (datacenter 단위)"
+  vmware.vmware.vm_list_group_by_clusters_info:
+    hostname: "{{ vmware_connection.hostname }}"
+    username: "{{ vmware_connection.username }}"
+    password: "{{ vmware_connection.password }}"
+    validate_certs: "{{ vmware_connection.validate_certs }}"
+    datacenter: "{{ vmware_datacenter }}"
+  register: vmware_all_vms
+  when: target_vms | length == 0
+
+- name: "[정보 수집] 조회할 VM 이름 리스트 구성"
+  ansible.builtin.set_fact:
+    vmware_vms_to_query: >-
+      {%- if target_vms | length > 0 -%}
+      {{ target_vms }}
+      {%- else -%}
+      {{
+        vmware_all_vms.vm_inventory_by_clusters
+        | dict2items
+        | map(attribute='value')
+        | map('dict2items') | flatten
+        | map(attribute='value') | flatten
+        | selectattr('is_template', 'equalto', include_templates | bool)
+        | map(attribute='name') | list
+      }}
+      {%- endif -%}
+
+- name: "[정보 수집] 대상 VM 출력"
+  ansible.builtin.debug:
+    msg: "조회 대상 VM ({{ vmware_vms_to_query | length }}개): {{ vmware_vms_to_query }}"
+
+- name: "[정보 수집] 대상 VM이 없는 경우 종료"
+  ansible.builtin.meta: end_play
+  when: vmware_vms_to_query | length == 0
+
+# -----------------------------------------------------------------------------
+# 2. VM별 상세 정보 (vSphere schema)
+#    config.* 와 runtime.* / guest.* 를 한 번에 수집
+# -----------------------------------------------------------------------------
+- name: "[정보 수집] VM 상세 정보 (config / runtime / guest)"
+  community.vmware.vmware_guest_info:
+    hostname: "{{ vmware_connection.hostname }}"
+    username: "{{ vmware_connection.username }}"
+    password: "{{ vmware_connection.password }}"
+    validate_certs: "{{ vmware_connection.validate_certs }}"
+    datacenter: "{{ vmware_datacenter }}"
+    name: "{{ item }}"
+    schema: "vsphere"
+    properties:
+      - "config.name"
+      - "config.uuid"
+      - "config.instanceUuid"
+      - "config.guestId"
+      - "config.guestFullName"
+      - "config.firmware"
+      - "config.version"
+      - "config.template"
+      - "config.hardware.numCPU"
+      - "config.hardware.numCoresPerSocket"
+      - "config.hardware.memoryMB"
+      - "runtime.powerState"
+      - "runtime.host"
+      - "runtime.bootTime"
+      - "guest.toolsStatus"
+      - "guest.toolsRunningStatus"
+      - "guest.toolsVersion"
+      - "guest.hostName"
+      - "guest.ipAddress"
+      - "guest.guestState"
+  loop: "{{ vmware_vms_to_query }}"
+  loop_control:
+    label: "{{ item }}"
+  register: vmware_vm_details
+  ignore_errors: true
+
+# -----------------------------------------------------------------------------
+# 3. 디스크 상세 (사이즈, 프로비저닝 타입, datastore)
+# -----------------------------------------------------------------------------
+- name: "[정보 수집] VM 디스크 정보"
+  community.vmware.vmware_guest_disk_info:
+    hostname: "{{ vmware_connection.hostname }}"
+    username: "{{ vmware_connection.username }}"
+    password: "{{ vmware_connection.password }}"
+    validate_certs: "{{ vmware_connection.validate_certs }}"
+    datacenter: "{{ vmware_datacenter }}"
+    name: "{{ item }}"
+  loop: "{{ vmware_vms_to_query }}"
+  loop_control:
+    label: "{{ item }}"
+  register: vmware_vm_disks
+  ignore_errors: true
+
+# -----------------------------------------------------------------------------
+# 4. 네트워크 상세 (NIC, MAC, portgroup, vlan)
+# -----------------------------------------------------------------------------
+- name: "[정보 수집] VM 네트워크 정보"
+  community.vmware.vmware_guest_network:
+    hostname: "{{ vmware_connection.hostname }}"
+    username: "{{ vmware_connection.username }}"
+    password: "{{ vmware_connection.password }}"
+    validate_certs: "{{ vmware_connection.validate_certs }}"
+    datacenter: "{{ vmware_datacenter }}"
+    name: "{{ item }}"
+    gather_network_info: true
+  loop: "{{ vmware_vms_to_query }}"
+  loop_control:
+    label: "{{ item }}"
+  register: vmware_vm_networks
+  ignore_errors: true
+
+# -----------------------------------------------------------------------------
+# 5. 수집한 정보를 OV 마이그레이션용 구조로 정리
+# -----------------------------------------------------------------------------
+- name: "[정보 수집] VM 정보를 마이그레이션 친화적 구조로 변환"
+  ansible.builtin.set_fact:
+    migration_inventory: "{{ migration_inventory | default([]) + [_vm_entry] }}"
+  vars:
+    _detail: "{{ item.0.instance | default({}) }}"
+    _disk:   "{{ item.1.guest_disk_info | default({}) }}"
+    _net:    "{{ item.2.network_data | default({}) }}"
+    _vm_entry:
+      name: "{{ _detail.config.name | default(item.0.item) }}"
+      source:
+        platform: "vmware"
+        vcenter: "{{ vmware_connection.hostname }}"
+        datacenter: "{{ vmware_datacenter }}"
+        uuid: "{{ _detail.config.uuid | default('') }}"
+        instance_uuid: "{{ _detail.config.instanceUuid | default('') }}"
+        moid: "{{ _detail.moid | default('') }}"
+        power_state: "{{ _detail.runtime.powerState | default('unknown') }}"
+        guest_id: "{{ _detail.config.guestId | default('') }}"
+        guest_os: "{{ _detail.config.guestFullName | default('') }}"
+        firmware: "{{ _detail.config.firmware | default('bios') }}"
+        hw_version: "{{ _detail.config.version | default('') }}"
+        is_template: "{{ _detail.config.template | default(false) }}"
+        hostname: "{{ _detail.guest.hostName | default('') }}"
+        ip_address: "{{ _detail.guest.ipAddress | default('') }}"
+        vmware_tools:
+          status: "{{ _detail.guest.toolsStatus | default('unknown') }}"
+          running: "{{ _detail.guest.toolsRunningStatus | default('unknown') }}"
+          version: "{{ _detail.guest.toolsVersion | default('') }}"
+      cpu:
+        cores: "{{ _detail.config.hardware.numCPU | default(0) }}"
+        cores_per_socket: "{{ _detail.config.hardware.numCoresPerSocket | default(1) }}"
+      memory_mb: "{{ _detail.config.hardware.memoryMB | default(0) }}"
+      disks: "{{ _disk }}"
+      networks: "{{ _net }}"
+  loop: "{{ vmware_vm_details.results | zip(vmware_vm_disks.results, vmware_vm_networks.results) | list }}"
+  loop_control:
+    label: "{{ item.0.item }}"
+  when:
+    - item.0.instance is defined
+    - not (item.0.failed | default(false))
+
+# -----------------------------------------------------------------------------
+# 6. 실패한 VM 수집 (별도 리포트)
+# -----------------------------------------------------------------------------
+- name: "[정보 수집] 실패한 VM 목록 수집"
+  ansible.builtin.set_fact:
+    failed_vms: >-
+      {{
+        vmware_vm_details.results
+        | selectattr('failed', 'defined')
+        | selectattr('failed', 'equalto', true)
+        | map(attribute='item')
+        | list
+      }}
+
+# -----------------------------------------------------------------------------
+# 7. 파일로 저장 (YAML / JSON / VM별)
+# -----------------------------------------------------------------------------
+- name: "[정보 수집] 통합 인벤토리 YAML 저장"
+  ansible.builtin.copy:
+    content: "{{ {'vms': migration_inventory | default([]), 'failed': failed_vms} | to_nice_yaml(indent=2, sort_keys=false) }}"
+    dest: "{{ output_dir }}/vm_inventory.yml"
+    mode: '0644'
+
+- name: "[정보 수집] 통합 인벤토리 JSON 저장 (다음 단계 입력용)"
+  ansible.builtin.copy:
+    content: "{{ {'vms': migration_inventory | default([]), 'failed': failed_vms} | to_nice_json(indent=2) }}"
+    dest: "{{ output_dir }}/vm_inventory.json"
+    mode: '0644'
+
+- name: "[정보 수집] VM별 개별 YAML 파일 저장"
+  ansible.builtin.copy:
+    content: "{{ item | to_nice_yaml(indent=2, sort_keys=false) }}"
+    dest: "{{ output_dir }}/{{ item.name }}.yml"
+    mode: '0644'
+  loop: "{{ migration_inventory | default([]) }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+# -----------------------------------------------------------------------------
+# 8. AAP artifact 로 상위 워크플로우에 전달
+#    (다음 Job 에서 hostvars 로 받을 수 있음)
+# -----------------------------------------------------------------------------
+- name: "[정보 수집] AAP workflow artifact 로 결과 등록"
+  ansible.builtin.set_stats:
+    data:
+      vmware_vm_inventory: "{{ migration_inventory | default([]) }}"
+      vmware_failed_vms: "{{ failed_vms }}"
+      vmware_inventory_file: "{{ output_dir }}/vm_inventory.json"
+    per_host: false
+    aggregate: false
+
+# -----------------------------------------------------------------------------
+# 9. 요약 출력
+# -----------------------------------------------------------------------------
+- name: "[정보 수집] 결과 요약"
+  ansible.builtin.debug:
+    msg:
+      - "====================== 수집 완료 ======================"
+      - "성공: {{ migration_inventory | default([]) | length }}대"
+      - "실패: {{ failed_vms | length }}대  {{ failed_vms if failed_vms else '' }}"
+      - "저장 위치: {{ output_dir }}"
+      - "통합 파일: vm_inventory.yml / vm_inventory.json"
+      - "========================================================"

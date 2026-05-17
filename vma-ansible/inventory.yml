@@ -1,0 +1,8 @@
+---
+# AAP에서는 Job Template의 Inventory 설정으로 대체됨
+# 단독 실행/테스트용 인벤토리
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_python_interpreter: "{{ ansible_playbook_python }}"
