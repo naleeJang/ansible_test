@@ -1,0 +1,43 @@
+---
+# =============================================================================
+# 마이그레이션 대상 정의 (비밀이 아닌 변수)
+# -----------------------------------------------------------------------------
+# vCenter 접속 정보 (hostname/username/password)는
+# AAP의 "VMware vCenter" Credential로 주입됨:
+#   VMWARE_HOST, VMWARE_USER, VMWARE_PASSWORD, VMWARE_VALIDATE_CERTS
+# =============================================================================
+
+# vCenter datacenter / cluster
+vcenter_datacenter: "Datacenter"
+vcenter_cluster: ""
+
+# 정보를 수집할 대상 VM 목록
+# 빈 리스트로 두면 datacenter 내 모든 VM을 조회합니다.
+target_vms: []
+  # - "rhel9-app01"
+  # - "rhel9-app02"
+
+# VM template 도 포함할지 여부 (마이그레이션 대상은 보통 false)
+include_templates: false
+
+# 결과 저장 위치
+# AAP에서는 작업 디렉터리가 임시이므로, artifact 저장 또는 외부 저장소 사용 권장
+output_dir: "{{ playbook_dir }}/vm_inventory"
+
+# 다음 단계(OV로 마이그레이션)에서 사용할 매핑 정보의 기본값
+# - guest_id_map: VMware Guest OS ID → OV에서 사용할 OS 라벨
+# - network_map : VMware portgroup → OCP-Virt NetworkAttachmentDefinition
+ov_guest_id_map:
+  rhel9_64Guest: "rhel9"
+  rhel8_64Guest: "rhel8"
+  rhel7_64Guest: "rhel7"
+  windows2019srvNext_64Guest: "windows2k19"
+  windows2022srvNext_64Guest: "windows2k22"
+  ubuntu64Guest: "ubuntu"
+  centos8_64Guest: "centos8"
+
+ov_network_map: {}
+  # "VM Network": "default/pod-network"
+  # "DPG-PROD": "vm-networks/prod-vlan100"
+
+ov_storage_class: "ocs-storagecluster-ceph-rbd"
