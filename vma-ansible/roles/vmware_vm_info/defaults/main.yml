@@ -1,0 +1,13 @@
+---
+# vmware_vm_info role 기본값
+# vCenter 인증 정보는 AAP credential의 환경변수에서 lookup
+vmware_connection:
+  hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+  username: "{{ lookup('env', 'VMWARE_USER') }}"
+  password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
+  validate_certs: "{{ lookup('env', 'VMWARE_VALIDATE_CERTS') | default(false, true) | bool }}"
+
+vmware_datacenter: "Datacenter"
+target_vms: []
+include_templates: false
+output_dir: "{{ playbook_dir }}/vm_inventory"
