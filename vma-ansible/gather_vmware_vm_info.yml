@@ -1,0 +1,50 @@
+---
+# =============================================================================
+# Playbook: VMware → OpenShift Virtualization 마이그레이션
+# 1단계: vCenter 7/8 에서 VM 정보 수집
+# -----------------------------------------------------------------------------
+# 환경: Red Hat Ansible Automation Platform 2.6
+# 대상 OV: OpenShift Virtualization 4.20
+#
+# AAP에서 사용하는 방식 (권장):
+#   Job Template 설정:
+#     - Inventory     : Demo Inventory 또는 localhost 단일 인벤토리
+#     - Project       : 이 저장소를 import
+#     - Playbook      : 01_gather_vmware_vm_info.yml
+#     - Credentials   : VMware vCenter Credential (필수)
+#     - Variables     : target_vms, vcenter_datacenter 등 (선택, surveys 권장)
+#     - Execution Environment :
+#         vmware.vmware / community.vmware 가 포함된 EE
+#
+# 로컬 테스트:
+#   export VMWARE_HOST=vcenter.example.com
+#   export VMWARE_USER='administrator@vsphere.local'
+#   export VMWARE_PASSWORD='****'
+#   export VMWARE_VALIDATE_CERTS=false
+#   ansible-playbook 01_gather_vmware_vm_info.yml -e @vars/main.yml
+# =============================================================================
+
+- name: "VMware vCenter 에서 VM 정보 수집"
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - vars/main.yml
+
+  pre_tasks:
+    - name: "vCenter Credential 환경변수 확인"
+      ansible.builtin.assert:
+        that:
+          - lookup('env', 'VMWARE_HOST')     | length > 0
+          - lookup('env', 'VMWARE_USER')     | length > 0
+          - lookup('env', 'VMWARE_PASSWORD') | length > 0
+        fail_msg: >
+          AAP 의 'VMware vCenter' Credential 이 Job Template 에 연결되지 않았습니다.
+          (또는 로컬 실행 시 VMWARE_HOST/USER/PASSWORD 환경변수가 누락되었습니다)
+
+  roles:
+    - role: vmware_vm_info
+      vars:
+        vmware_datacenter: "{{ vcenter_datacenter }}"
+        target_vms:       "{{ target_vms }}"
+        include_templates: "{{ include_templates | default(false) }}"
+        output_dir:       "{{ output_dir }}"
